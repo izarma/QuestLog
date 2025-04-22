@@ -5,6 +5,7 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Quest {
     pub id: Uuid,
+    pub title: String,
     pub description: String,
     pub status: QuestStatus,
     pub notes: Vec<String>,
