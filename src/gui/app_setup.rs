@@ -19,11 +19,11 @@ impl QuestLog {
             expanded_quests: std::collections::HashSet::new(),
         };
         // Load persisted state if needed
-        // if let Some(storage) = cc.storage {
-        //     if let Some(saved) = eframe::get_value(storage, eframe::APP_KEY) {
-        //         log = saved;
-        //     }
-        // }
+        if let Some(storage) = cc.storage {
+            if let Some(saved) = eframe::get_value(storage, eframe::APP_KEY) {
+                log = saved;
+            }
+        }
         log
     }
 }
