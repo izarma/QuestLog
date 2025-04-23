@@ -32,12 +32,11 @@ fn main() -> eframe::Result {
         // mouse_passthrough: true, // Requires nightly
         ..Default::default()
     };
-    let (epic, quest) = create_dummy_data();
-    println!("Hello, Quest {:#?}", quest);
+    let (epic, epic_2) = create_dummy_data();
     println!("Hello, Quest Epic {:#?}", epic);
     eframe::run_native(
         "Quest Log Overlay",
         native_options,
-        Box::new(|cc| Ok(Box::new(QuestLog::new(cc, epic)))),
+        Box::new(|cc| Ok(Box::new(QuestLog::new(cc, epic, epic_2)))),
     )
 }

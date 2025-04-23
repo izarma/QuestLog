@@ -1,5 +1,5 @@
+use super::render_epic_cards::*;
 use crate::model::epic::Epic;
-use super::render_quests::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Clone, Serialize, Deserialize)]
@@ -12,19 +12,19 @@ pub struct QuestLog {
 }
 
 impl QuestLog {
-    pub fn new(cc: &eframe::CreationContext<'_>, initial_epic: Epic) -> Self {
-        let mut log = Self {
-            epics: vec![initial_epic],
+    pub fn new(_cc: &eframe::CreationContext<'_>, initial_epic: Epic, initial_epic_2: Epic) -> Self {
+        let quest_log = Self {
+            epics: vec![initial_epic, initial_epic_2],
             screen_rect: None,
             expanded_quests: std::collections::HashSet::new(),
         };
         // Load persisted state if needed
-        if let Some(storage) = cc.storage {
-            if let Some(saved) = eframe::get_value(storage, eframe::APP_KEY) {
-                log = saved;
-            }
-        }
-        log
+        // if let Some(storage) = cc.storage {
+        //     if let Some(saved) = eframe::get_value(storage, eframe::APP_KEY) {
+        //         log = saved;
+        //     }
+        // }
+        quest_log
     }
 }
 
@@ -37,7 +37,7 @@ impl eframe::App for QuestLog {
             .order(egui::Order::Foreground)
             .movable(false)
             .show(ctx, |ui| {
-                render_quests(self, ui);
+                render_epic_cards(self, ui, ctx);
             });
     }
 

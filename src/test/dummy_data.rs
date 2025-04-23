@@ -2,7 +2,7 @@ use crate::model::epic::Epic;
 use crate::model::quest::*;
 use uuid::Uuid;
 
-pub fn create_dummy_data() -> (Epic, Quest) {
+pub fn create_dummy_data() -> (Epic, Epic) {
     let quest_1_1 = Quest {
         id: Uuid::new_v4(),
         title: "Rust Book Ch 1".to_string(),
@@ -14,7 +14,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "Make and organize std rust notes".to_string(),
         ],
         progress: 1.0,
-        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(1)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
         dependencies: Vec::new(),
@@ -32,7 +32,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "Make and organize std rust notes".to_string(),
         ],
         progress: 0.3,
-        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(2)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
         dependencies: vec![quest_1_1.id.clone()],
@@ -50,7 +50,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "Make and organize std rust notes".to_string(),
         ],
         progress: 0.0,
-        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(3)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
         dependencies: vec![quest_1_2.id.clone()],
@@ -67,7 +67,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "Watch LetsGetRusty Rust Book videos".to_string(),
             "Make and organize std rust notes".to_string(),
         ],
-        progress: 1.3/20.0,
+        progress: 1.3 / 20.0,
         deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
@@ -120,7 +120,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "check wasm apps".to_string(),
         ],
         progress: 0.3,
-        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(10)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
         dependencies: Vec::new(),
@@ -151,7 +151,7 @@ pub fn create_dummy_data() -> (Epic, Quest) {
             "learn about MCP and A2A".to_string(),
         ],
         progress: 0.0,
-        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(20)),
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
         dependencies: Vec::new(),
@@ -168,5 +168,42 @@ pub fn create_dummy_data() -> (Epic, Quest) {
         created_at: chrono::Utc::now(),
         updated_at: chrono::Utc::now(),
     };
-    (epic, quest)
+
+    let quest_a = Quest {
+        id: Uuid::new_v4(),
+        title: "Apply Online".to_string(),
+        description: "Aply online with CA Number".to_string(),
+        status: QuestStatus::Available,
+        notes: vec!["check site".to_string()],
+        progress: 0.0,
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        created_at: chrono::Utc::now(),
+        updated_at: chrono::Utc::now(),
+        dependencies: Vec::new(),
+        children: Vec::new(),
+    };
+
+    let quest_a1 = Quest {
+        id: Uuid::new_v4(),
+        title: "Get vendor".to_string(),
+        description: "Find and contact a vendor for installation".to_string(),
+        status: QuestStatus::Locked,
+        notes: vec!["check site".to_string()],
+        progress: 0.0,
+        deadline: Some(chrono::Utc::now() + chrono::Duration::days(7)),
+        created_at: chrono::Utc::now(),
+        updated_at: chrono::Utc::now(),
+        dependencies: Vec::new(),
+        children: vec![quest_a.clone()],
+    };
+    let quests = vec![quest_a.clone(), quest_a1.clone()];
+    let epic_2 = Epic {
+        id: Uuid::new_v4(),
+        title: "Solar Installation".to_string(),
+        status: QuestStatus::Planning,
+        quests,
+        created_at: chrono::Utc::now(),
+        updated_at: chrono::Utc::now(),
+    };
+    (epic, epic_2)
 }

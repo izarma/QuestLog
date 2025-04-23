@@ -2378,7 +2378,9 @@ dependencies = [
  "eframe",
  "egui",
  "serde",
+ "tracing",
  "uuid",
+ "winit",
 ]
 
 [[package]]
