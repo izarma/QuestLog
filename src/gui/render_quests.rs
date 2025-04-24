@@ -1,8 +1,8 @@
-use super::app_setup::*;
+use super::{app_setup::*, render_content::PADDING};
 use crate::model::quest::{Quest, QuestStatus};
-use egui::Ui;
+use egui::{Id, Ui};
 
-pub fn render_quest(quest: &Quest, ui: &mut Ui) {
+pub(crate) fn render_quest(ctx: &egui::Context, quest: &Quest, ui: &mut Ui) {
     ui.horizontal(|ui| {
         let (icon, color) = match quest.status {
             QuestStatus::Locked => (egui::RichText::new("🔒"), egui::Color32::GRAY),
@@ -24,11 +24,22 @@ pub fn render_quest(quest: &Quest, ui: &mut Ui) {
             ui.horizontal(|ui| {
                 ui.strong(&quest.description);
             });
-
-            if let Some(deadline) = quest.deadline {
-                let remaining = deadline - chrono::Utc::now();
-                ui.label(format!("⏳ {} days left", remaining.num_days()));
-            }
+            ui.horizontal(|ui| {
+                if let Some(deadline) = quest.deadline {
+                    let remaining = deadline - chrono::Utc::now();
+                    ui.label(format!("⏳ {} days left", remaining.num_days()));
+                }
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Min), |ui| {
+                    ui.add_space(20.0);
+                    let notes_btn = ui.add(egui::Button::new(
+                        egui::RichText::new("📒").text_style(egui::TextStyle::Body),
+                    ));
+                    if notes_btn.clicked() {
+                        show_notes_popup(ctx, quest, ui);
+                    } else {
+                    };
+                });
+            });
 
             ui.horizontal(|ui| {
                 ui.label("Progress: ");
@@ -39,26 +50,27 @@ pub fn render_quest(quest: &Quest, ui: &mut Ui) {
                         .text(format!("{:.0}%", quest.progress * 100.0)),
                 );
                 // add ui element to edit quest.progress
-                //ui.add(egui::Slider::new(mut quest.progress.clone(), 0.0..=1.0)); // need to let this slider update progress
+                ui.add(egui::Slider::new(&mut quest.progress.clone(), 0.0..=1.0)); // need to let this slider update progress
             });
-
-            for note in &quest.notes {
-                ui.weak(note);
-            }
         });
     });
 }
 
-pub fn render_quest_tree(quest_log: &mut QuestLog, quest: &Quest, ui: &mut Ui) {
+pub(crate) fn render_quest_tree(
+    ctx: &egui::Context,
+    quest_log: &mut QuestLog,
+    quest: &Quest,
+    ui: &mut Ui,
+) {
     let is_expanded = quest_log.expanded_quests.contains(&quest.id);
     let response = egui::CollapsingHeader::new(&quest.title)
         .id_salt(quest.id)
         .show(ui, |ui| {
-            render_quest(quest, ui);
+            render_quest(ctx, quest, ui);
             if !quest.children.is_empty() {
-                ui.vertical( |ui| {
+                ui.vertical(|ui| {
                     for child in &quest.children {
-                        render_quest_tree(quest_log, child, ui);
+                        render_quest_tree(ctx, quest_log, child, ui);
                     }
                 });
             }
@@ -72,4 +84,19 @@ pub fn render_quest_tree(quest_log: &mut QuestLog, quest: &Quest, ui: &mut Ui) {
             quest_log.expanded_quests.insert(quest.id);
         }
     }
+}
+
+fn show_notes_popup(ctx: &egui::Context, quest: &Quest, ui: &mut Ui) {
+    // Handle the button click event
+    egui::Window::new("Notes 📒")
+        .id(Id::new("Quest Notes"))
+        .collapsible(true)
+        .resizable(true)
+        .anchor(egui::Align2::RIGHT_CENTER, [0.0, 0.0])
+        .show(ctx, |ui| {
+            ui.label("Notes:");
+            for note in &quest.notes {
+                ui.weak(note);
+            }
+        });
 }

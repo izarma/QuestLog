@@ -1,4 +1,4 @@
-use super::render_epic_cards::*;
+use super::{configure_fonts::configure_font, render_content::*};
 use crate::model::epic::Epic;
 use serde::{Deserialize, Serialize};
 
@@ -12,12 +12,14 @@ pub struct QuestLog {
 }
 
 impl QuestLog {
-    pub fn new(_cc: &eframe::CreationContext<'_>, initial_epic: Epic, initial_epic_2: Epic) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>, initial_epic: Epic, initial_epic_2: Epic) -> Self {
         let quest_log = Self {
             epics: vec![initial_epic, initial_epic_2],
             screen_rect: None,
             expanded_quests: std::collections::HashSet::new(),
         };
+        // Configure fonts
+        configure_font(&cc.egui_ctx);
         // Load persisted state if needed
         // if let Some(storage) = cc.storage {
         //     if let Some(saved) = eframe::get_value(storage, eframe::APP_KEY) {
@@ -35,9 +37,10 @@ impl eframe::App for QuestLog {
 
         egui::Area::new("quest_overlay".into())
             .order(egui::Order::Foreground)
+            .default_size(egui::vec2(900.0, 500.0))
             .movable(false)
             .show(ctx, |ui| {
-                render_epic_cards(self, ui, ctx);
+                render_content(self, ui, ctx);
             });
     }
 

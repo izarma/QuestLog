@@ -8,7 +8,7 @@ mod test;
 
 fn calculate_top_right_position() -> Pos2 {
     let screen_size = egui::vec2(1920.0, 1080.0); // Example - implement dynamic detection
-    egui::pos2(screen_size.x - 400.0 - 20.0, 20.0) // 400px width + 20px margin
+    egui::pos2(screen_size.x, 20.0) // 400px width + 20px margin
 }
 
 #[cfg(not(target_arch = "wasm32"))]
